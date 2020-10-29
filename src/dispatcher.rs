@@ -262,7 +262,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_new_connection(&self, context_id: u32) -> Action {
+    fn on_new_connection(&self, context_id: u32) -> FilterStatus {
         if let Some(stream) = self.streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             stream.on_new_connection()
@@ -271,7 +271,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_downstream_data(&self, context_id: u32, data_size: usize, end_of_stream: bool) -> Action {
+    fn on_downstream_data(&self, context_id: u32, data_size: usize, end_of_stream: bool) -> FilterStatus {
         if let Some(stream) = self.streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             stream.on_downstream_data(data_size, end_of_stream)
@@ -289,7 +289,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_upstream_data(&self, context_id: u32, data_size: usize, end_of_stream: bool) -> Action {
+    fn on_upstream_data(&self, context_id: u32, data_size: usize, end_of_stream: bool) -> FilterStatus {
         if let Some(stream) = self.streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             stream.on_upstream_data(data_size, end_of_stream)
@@ -307,7 +307,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_http_request_headers(&self, context_id: u32, num_headers: usize) -> Action {
+    fn on_http_request_headers(&self, context_id: u32, num_headers: usize) -> FilterHeadersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_request_headers(num_headers)
@@ -321,7 +321,7 @@ impl Dispatcher {
         context_id: u32,
         body_size: usize,
         end_of_stream: bool,
-    ) -> Action {
+    ) -> FilterDataStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_request_body(body_size, end_of_stream)
@@ -330,7 +330,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_http_request_trailers(&self, context_id: u32, num_trailers: usize) -> Action {
+    fn on_http_request_trailers(&self, context_id: u32, num_trailers: usize) -> FilterTrailersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_request_trailers(num_trailers)
@@ -339,7 +339,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_http_response_headers(&self, context_id: u32, num_headers: usize) -> Action {
+    fn on_http_response_headers(&self, context_id: u32, num_headers: usize) -> FilterHeadersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_response_headers(num_headers)
@@ -353,7 +353,7 @@ impl Dispatcher {
         context_id: u32,
         body_size: usize,
         end_of_stream: bool,
-    ) -> Action {
+    ) -> FilterDataStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_response_body(body_size, end_of_stream)
@@ -362,7 +362,7 @@ impl Dispatcher {
         }
     }
 
-    fn on_http_response_trailers(&self, context_id: u32, num_trailers: usize) -> Action {
+    fn on_http_response_trailers(&self, context_id: u32, num_trailers: usize) -> FilterTrailersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
             http_stream.on_http_response_trailers(num_trailers)
@@ -439,7 +439,7 @@ pub extern "C" fn proxy_on_queue_ready(context_id: u32, queue_id: u32) {
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_on_new_connection(context_id: u32) -> Action {
+pub extern "C" fn proxy_on_new_connection(context_id: u32) -> FilterStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_new_connection(context_id))
 }
 
@@ -448,7 +448,7 @@ pub extern "C" fn proxy_on_downstream_data(
     context_id: u32,
     data_size: usize,
     end_of_stream: bool,
-) -> Action {
+) -> FilterStatus {
     DISPATCHER
         .with(|dispatcher| dispatcher.on_downstream_data(context_id, data_size, end_of_stream))
 }
@@ -463,7 +463,7 @@ pub extern "C" fn proxy_on_upstream_data(
     context_id: u32,
     data_size: usize,
     end_of_stream: bool,
-) -> Action {
+) -> FilterStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_upstream_data(context_id, data_size, end_of_stream))
 }
 
@@ -473,7 +473,7 @@ pub extern "C" fn proxy_on_upstream_connection_close(context_id: u32, peer_type:
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_on_request_headers(context_id: u32, num_headers: usize) -> Action {
+pub extern "C" fn proxy_on_request_headers(context_id: u32, num_headers: usize) -> FilterHeadersStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_http_request_headers(context_id, num_headers))
 }
 
@@ -482,18 +482,18 @@ pub extern "C" fn proxy_on_request_body(
     context_id: u32,
     body_size: usize,
     end_of_stream: bool,
-) -> Action {
+) -> FilterDataStatus {
     DISPATCHER
         .with(|dispatcher| dispatcher.on_http_request_body(context_id, body_size, end_of_stream))
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_on_request_trailers(context_id: u32, num_trailers: usize) -> Action {
+pub extern "C" fn proxy_on_request_trailers(context_id: u32, num_trailers: usize) -> FilterTrailersStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_http_request_trailers(context_id, num_trailers))
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_on_response_headers(context_id: u32, num_headers: usize) -> Action {
+pub extern "C" fn proxy_on_response_headers(context_id: u32, num_headers: usize) -> FilterHeadersStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_http_response_headers(context_id, num_headers))
 }
 
@@ -502,13 +502,13 @@ pub extern "C" fn proxy_on_response_body(
     context_id: u32,
     body_size: usize,
     end_of_stream: bool,
-) -> Action {
+) -> FilterDataStatus {
     DISPATCHER
         .with(|dispatcher| dispatcher.on_http_response_body(context_id, body_size, end_of_stream))
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_on_response_trailers(context_id: u32, num_trailers: usize) -> Action {
+pub extern "C" fn proxy_on_response_trailers(context_id: u32, num_trailers: usize) -> FilterTrailersStatus {
     DISPATCHER.with(|dispatcher| dispatcher.on_http_response_trailers(context_id, num_trailers))
 }
 
