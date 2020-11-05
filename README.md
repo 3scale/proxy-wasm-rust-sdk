@@ -1,19 +1,32 @@
-# WebAssembly for Proxies (Rust SDK)
+# WebAssembly for Proxies (Rust SDK) - 3scale version
 
-[![Build Status][build-badge]][build-link]
-[![Crate][crate-badge]][crate-link]
-[![Documentation][docs-badge]][docs-link]
-[![Apache 2.0 License][license-badge]][license-link]
+This is a fork of the upstream [proxy-wasm-rust-sdk](https://github.com/proxy-wasm/proxy-wasm-rust-sdk) repository intended to be used as the base proxy-wasm
+library to develop extensions in Rust at Red Hat.
 
+Most patches you will find here have associated open pull requests or issues
+in the upstream project from various people.
 
-[build-badge]: https://github.com/proxy-wasm/proxy-wasm-rust-sdk/workflows/Rust/badge.svg?branch=master
-[build-link]: https://github.com/proxy-wasm/proxy-wasm-rust-sdk/actions?query=workflow%3ARust+branch%3Amaster
-[crate-badge]: https://img.shields.io/crates/v/proxy-wasm.svg
-[crate-link]: https://crates.io/crates/proxy-wasm
-[docs-badge]: https://docs.rs/proxy-wasm/badge.svg
-[docs-link]: https://docs.rs/proxy-wasm
-[license-badge]: https://img.shields.io/github/license/proxy-wasm/proxy-wasm-rust-sdk
-[license-link]: https://github.com/proxy-wasm/proxy-wasm-rust-sdk/blob/master/LICENSE
+3scale intends for this fork to closely follow upstream while addressing
+shortcomings we believe to be important for WASM module development. Hopefully
+we'll keep differences with upstream to a minimum as new upstream releases
+address these issues. This means we expect some such issues to be solved in
+potentially incompatible ways, for which we'll just break compatibility and
+ship new major versions. Over time and as the proxy-wasm ABI spec and
+development stabilizes, we expect the need for this fork to fade away.
+
+If you want to use this proxy-wasm fork, make sure to pin your project to a
+specific tag or a `-stable` release. If you want to minimise diffs when you
+switch over to upstream at a later point, be sure to use package renaming in
+your cargo manifest's dependencies section:
+
+> proxy-wasm = { git = "https://github.com/3scale/proxy-wasm-rust-sdk", branch = "v0.1-stable", package = "proxy-wasm-3scale" }
+
+## Contributing
+
+While the plan is to maintain this project as a lightweight fork on top of
+upstream, we welcome PRs, but we request contributors to make sure any new
+code is also PR'ed to the upstream project unless it touches something that
+upstream won't add or is undecided or unresponsive about.
 
 ## Examples
 

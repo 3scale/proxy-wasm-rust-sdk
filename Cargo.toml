@@ -1,11 +1,11 @@
 [package]
-name = "proxy-wasm"
-version = "0.1.2"
-authors = ["Piotr Sikora <piotrsikora@google.com>"]
-description = "WebAssembly for Proxies"
+name = "proxy-wasm-3scale"
+version = "0.1.0"
+authors = ["Piotr Sikora <piotrsikora@google.com>", "Alex Martinez Ruiz <amr@redhat.com>"]
+description = "WebAssembly for Proxies - 3scale version"
 readme = "README.md"
 license = "Apache-2.0"
-repository = "https://github.com/proxy-wasm/proxy-wasm-rust-sdk"
+repository = "https://github.com/3scale/proxy-wasm-rust-sdk"
 edition = "2018"
 
 [features]
