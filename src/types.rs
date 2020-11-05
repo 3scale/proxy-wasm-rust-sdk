@@ -19,7 +19,7 @@ pub type NewStreamContext = fn(context_id: u32, root_context_id: u32) -> Box<dyn
 pub type NewHttpContext = fn(context_id: u32, root_context_id: u32) -> Box<dyn HttpContext>;
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum LogLevel {
     Trace = 0,
     Debug = 1,
@@ -30,14 +30,14 @@ pub enum LogLevel {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum FilterStatus {
     Continue = 0,
     StopIteration = 1,
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum FilterHeadersStatus {
     Continue = 0,
     StopIteration = 1,
@@ -47,20 +47,20 @@ pub enum FilterHeadersStatus {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum FilterMetadataStatus {
     Continue = 0,
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum FilterTrailersStatus {
     Continue = 0,
     StopIteration = 1,
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum FilterDataStatus {
     Continue = 0,
     StopIterationAndBuffer = 1,
@@ -69,7 +69,62 @@ pub enum FilterDataStatus {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum BufferType {
+    HttpRequestBody = 0,
+    HttpResponseBody = 1,
+    DownstreamData = 2,
+    UpstreamData = 3,
+    HttpCallResponseBody = 4,
+    GrpcReceiveBuffer = 5,
+    VmConfiguration = 6,
+    PluginConfiguration = 7,
+    CallData = 8,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum MapType {
+    HttpRequestHeaders = 0,
+    HttpRequestTrailers = 1,
+    HttpResponseHeaders = 2,
+    HttpResponseTrailers = 3,
+    GrpcReceiveInitialMetadata = 4,
+    GrpcReceiveTrailingMetadata = 5,
+    HttpCallResponseHeaders = 6,
+    HttpCallResponseTrailers = 7,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum PeerType {
+    Unknown = 0,
+    Local = 1,
+    Remote = 2,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum MetricType {
+    Counter = 0,
+    Gauge = 1,
+    Histogram = 2,
+}
+
+pub type Bytes = Vec<u8>;
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum StreamType {
+    Request = 0,
+    Response = 1,
+}
+
+// This is returned by the ABI and subject to additions, so make it
+// non exhaustive.
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+#[non_exhaustive]
 pub enum Status {
     Ok = 0,
     NotFound = 1,
@@ -84,56 +139,4 @@ pub enum Status {
     InternalFailure = 10,
     BrokenConnection = 11,
     Unimplemented = 12,
-}
-
-#[repr(u32)]
-#[derive(Debug)]
-pub enum BufferType {
-    HttpRequestBody = 0,
-    HttpResponseBody = 1,
-    DownstreamData = 2,
-    UpstreamData = 3,
-    HttpCallResponseBody = 4,
-    GrpcReceiveBuffer = 5,
-    VmConfiguration = 6,
-    PluginConfiguration = 7,
-    CallData = 8,
-}
-
-#[repr(u32)]
-#[derive(Debug)]
-pub enum MapType {
-    HttpRequestHeaders = 0,
-    HttpRequestTrailers = 1,
-    HttpResponseHeaders = 2,
-    HttpResponseTrailers = 3,
-    GrpcReceiveInitialMetadata = 4,
-    GrpcReceiveTrailingMetadata = 5,
-    HttpCallResponseHeaders = 6,
-    HttpCallResponseTrailers = 7,
-}
-
-#[repr(u32)]
-#[derive(Debug)]
-pub enum PeerType {
-    Unknown = 0,
-    Local = 1,
-    Remote = 2,
-}
-
-#[repr(u32)]
-#[derive(Debug)]
-pub enum MetricType {
-    Counter = 0,
-    Gauge = 1,
-    Histogram = 2,
-}
-
-pub type Bytes = Vec<u8>;
-
-#[repr(u32)]
-#[derive(Debug)]
-pub enum StreamType {
-    Request = 0,
-    Response = 1,
 }
