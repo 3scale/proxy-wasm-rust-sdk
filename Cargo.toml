@@ -17,20 +17,29 @@ log = "0.4"
 wee_alloc = { version = "0.4", optional = true }
 
 [dev-dependencies]
+cfg-if = "1.0"
 chrono = "0.4"
+
+[target.'cfg(not(all(target_arch = "wasm32", target_os = "unknown")))'.dev-dependencies]
+getrandom = "0.2"
 
 [profile.release]
 lto = true
 opt-level = 3
 panic = "abort"
 
-[raze]
+[package.metadata.raze]
 workspace_path = "//bazel/cargo"
-target = "wasm32-unknown-unknown"
 genmode = "Remote"
 
-[raze.crates.log.'0.4.11']
-additional_flags = ["--cfg=atomic_cas"]
+[package.metadata.raze.crates.getrandom.'=0.2.0']
+gen_buildrs = true
+
+[package.metadata.raze.crates.libc.'=0.2.80']
+gen_buildrs = true
+
+[package.metadata.raze.crates.log.'=0.4.11']
+gen_buildrs = true
 
 [[example]]
 name = "hello_world"
