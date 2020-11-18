@@ -70,6 +70,15 @@ pub enum FilterDataStatus {
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum StreamType {
+    HttpRequest = 0,
+    HttpResponse = 1,
+    Downstream = 2,
+    Upstream = 3,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum BufferType {
     HttpRequestBody = 0,
     HttpResponseBody = 1,
@@ -112,13 +121,6 @@ pub enum MetricType {
 }
 
 pub type Bytes = Vec<u8>;
-
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum StreamType {
-    Request = 0,
-    Response = 1,
-}
 
 // This is returned by the ABI and subject to additions, so make it
 // non exhaustive.
