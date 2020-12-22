@@ -16,6 +16,11 @@ use crate::hostcalls;
 use crate::types::*;
 use std::time::{Duration, SystemTime};
 
+pub enum ChildContext {
+    StreamContext(Box<dyn StreamContext>),
+    HttpContext(Box<dyn HttpContext>),
+}
+
 pub trait Context {
     fn get_current_time(&self) -> SystemTime {
         hostcalls::get_current_time().unwrap()
@@ -122,15 +127,8 @@ pub trait RootContext: Context {
 
     fn on_log(&mut self) {}
 
-    fn create_http_context(&self, _context_id: u32) -> Option<Box<dyn HttpContext>> {
-        None
-    }
-
-    fn create_stream_context(&self, _context_id: u32) -> Option<Box<dyn StreamContext>> {
-        None
-    }
-
-    fn get_type(&self) -> Option<ContextType> {
+    fn on_create_child_context(&mut self, _context_id: u32) -> Option<ChildContext> {
+        // on_create_child_context _is required_ to create its child context
         None
     }
 }
