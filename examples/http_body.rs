@@ -18,7 +18,21 @@ use proxy_wasm::types::*;
 #[no_mangle]
 pub fn _start() {
     proxy_wasm::set_log_level(LogLevel::Trace);
-    proxy_wasm::set_http_context(|_, _| -> Box<dyn HttpContext> { Box::new(HttpBody) });
+    proxy_wasm::set_root_context(|_| -> Box<dyn RootContext> { Box::new(HttpBodyRoot) });
+}
+
+struct HttpBodyRoot;
+
+impl Context for HttpBodyRoot {}
+
+impl RootContext for HttpBodyRoot {
+    fn get_type(&self) -> Option<ContextType> {
+        Some(ContextType::HttpContext)
+    }
+
+    fn create_http_context(&self, _context_id: u32) -> Option<Box<dyn HttpContext>> {
+        Some(Box::new(HttpBody))
+    }
 }
 
 struct HttpBody;
@@ -46,7 +60,7 @@ impl HttpContext for HttpBody {
         // Since we returned "Pause" previuously, this will return the whole body.
         if let Some(body_bytes) = self.get_http_response_body(0, body_size) {
             let body_str = String::from_utf8(body_bytes).unwrap();
-            if body_str.find("secret").is_some() {
+            if body_str.contains("secret") {
                 let new_body = format!("Original message body ({} bytes) redacted.", body_size);
                 self.set_http_response_body(0, body_size, &new_body.into_bytes());
             }
