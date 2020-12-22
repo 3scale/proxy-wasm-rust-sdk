@@ -21,6 +21,17 @@ your cargo manifest's dependencies section:
 
 > proxy-wasm = { git = "https://github.com/3scale/proxy-wasm-rust-sdk", branch = "v0.1-stable", package = "proxy-wasm-3scale" }
 
+## Differences
+
+So far the main difference is that this fork does not support `set_*_context`
+calls, but instead requires the developer to implement `on_create_child_context`
+if they intend to create HTTP or Stream contexts.
+
+Additionally, this fork uses FilterStatus (and other similar types) instead of
+Action for returning status values back to Envoy. This is so we can avoid some
+bugs in filters by using values not exposed by Action. That said, at this
+moment such bugs might be already fixed and we could soon return to use Action.
+
 ## Contributing
 
 While the plan is to maintain this project as a lightweight fork on top of
