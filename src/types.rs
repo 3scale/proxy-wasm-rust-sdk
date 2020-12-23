@@ -39,8 +39,11 @@ pub enum Action {
     Pause = 1,
 }
 
+// This is returned by the ABI and subject to additions, so make it
+// non exhaustive
 #[repr(u32)]
 #[derive(Debug)]
+#[non_exhaustive]
 pub enum Status {
     Ok = 0,
     NotFound = 1,
