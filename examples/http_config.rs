@@ -32,9 +32,9 @@ struct HttpConfigHeader {
 impl Context for HttpConfigHeader {}
 
 impl HttpContext for HttpConfigHeader {
-    fn on_http_response_headers(&mut self, _: usize, _: bool) -> Action {
+    fn on_http_response_headers(&mut self, _: usize, _: bool) -> FilterHeadersStatus {
         self.add_http_response_header("custom-header", self.header_content.as_str());
-        Action::Continue
+        FilterHeadersStatus::Continue
     }
 }
 
