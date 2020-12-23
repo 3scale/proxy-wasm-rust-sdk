@@ -133,12 +133,12 @@ pub trait RootContext: Context {
 }
 
 pub trait StreamContext: Context {
-    fn on_new_connection(&mut self) -> Action {
-        Action::Continue
+    fn on_new_connection(&mut self) -> FilterStatus {
+        FilterStatus::Continue
     }
 
-    fn on_downstream_data(&mut self, _data_size: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_downstream_data(&mut self, _data_size: usize, _end_of_stream: bool) -> FilterStatus {
+        FilterStatus::Continue
     }
 
     fn get_downstream_data(&self, start: usize, max_size: usize) -> Option<Bytes> {
@@ -159,8 +159,8 @@ pub trait StreamContext: Context {
 
     fn on_downstream_close(&mut self, _peer_type: PeerType) {}
 
-    fn on_upstream_data(&mut self, _data_size: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_upstream_data(&mut self, _data_size: usize, _end_of_stream: bool) -> FilterStatus {
+        FilterStatus::Continue
     }
 
     fn get_upstream_data(&self, start: usize, max_size: usize) -> Option<Bytes> {
@@ -185,8 +185,8 @@ pub trait StreamContext: Context {
 }
 
 pub trait HttpContext: Context {
-    fn on_http_request_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_http_request_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> FilterHeadersStatus {
+        FilterHeadersStatus::Continue
     }
 
     fn get_http_request_headers(&self) -> Vec<(String, String)> {
@@ -209,8 +209,8 @@ pub trait HttpContext: Context {
         hostcalls::add_map_value(MapType::HttpRequestHeaders, &name, value).unwrap()
     }
 
-    fn on_http_request_body(&mut self, _body_size: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_http_request_body(&mut self, _body_size: usize, _end_of_stream: bool) -> FilterDataStatus {
+        FilterDataStatus::Continue
     }
 
     fn get_http_request_body(&self, start: usize, max_size: usize) -> Option<Bytes> {
@@ -221,8 +221,8 @@ pub trait HttpContext: Context {
         hostcalls::set_buffer(BufferType::HttpRequestBody, start, size, value).unwrap()
     }
 
-    fn on_http_request_trailers(&mut self, _num_trailers: usize) -> Action {
-        Action::Continue
+    fn on_http_request_trailers(&mut self, _num_trailers: usize) -> FilterTrailersStatus {
+        FilterTrailersStatus::Continue
     }
 
     fn get_http_request_trailers(&self) -> Vec<(String, String)> {
@@ -249,8 +249,8 @@ pub trait HttpContext: Context {
         hostcalls::resume_stream(StreamType::HttpRequest).unwrap()
     }
 
-    fn on_http_response_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_http_response_headers(&mut self, _num_headers: usize, _end_of_stream: bool) -> FilterHeadersStatus {
+        FilterHeadersStatus::Continue
     }
 
     fn get_http_response_headers(&self) -> Vec<(String, String)> {
@@ -273,8 +273,8 @@ pub trait HttpContext: Context {
         hostcalls::add_map_value(MapType::HttpResponseHeaders, &name, value).unwrap()
     }
 
-    fn on_http_response_body(&mut self, _body_size: usize, _end_of_stream: bool) -> Action {
-        Action::Continue
+    fn on_http_response_body(&mut self, _body_size: usize, _end_of_stream: bool) -> FilterDataStatus {
+        FilterDataStatus::Continue
     }
 
     fn get_http_response_body(&self, start: usize, max_size: usize) -> Option<Bytes> {
@@ -285,8 +285,8 @@ pub trait HttpContext: Context {
         hostcalls::set_buffer(BufferType::HttpResponseBody, start, size, value).unwrap()
     }
 
-    fn on_http_response_trailers(&mut self, _num_trailers: usize) -> Action {
-        Action::Continue
+    fn on_http_response_trailers(&mut self, _num_trailers: usize) -> FilterTrailersStatus {
+        FilterTrailersStatus::Continue
     }
 
     fn get_http_response_trailers(&self) -> Vec<(String, String)> {
