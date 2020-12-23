@@ -22,7 +22,7 @@ pub enum ChildContext {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum LogLevel {
     Trace = 0,
     Debug = 1,
@@ -33,7 +33,7 @@ pub enum LogLevel {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum Action {
     Continue = 0,
     Pause = 1,
@@ -42,7 +42,7 @@ pub enum Action {
 // This is returned by the ABI and subject to additions, so make it
 // non exhaustive
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 #[non_exhaustive]
 pub enum Status {
     Ok = 0,
@@ -61,7 +61,7 @@ pub enum Status {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum StreamType {
     HttpRequest = 0,
     HttpResponse = 1,
@@ -70,7 +70,7 @@ pub enum StreamType {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum BufferType {
     HttpRequestBody = 0,
     HttpResponseBody = 1,
@@ -84,7 +84,7 @@ pub enum BufferType {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum MapType {
     HttpRequestHeaders = 0,
     HttpRequestTrailers = 1,
@@ -97,7 +97,7 @@ pub enum MapType {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum PeerType {
     Unknown = 0,
     Local = 1,
@@ -105,7 +105,7 @@ pub enum PeerType {
 }
 
 #[repr(u32)]
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum MetricType {
     Counter = 0,
     Gauge = 1,
