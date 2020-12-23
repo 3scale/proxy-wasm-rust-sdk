@@ -34,9 +34,41 @@ pub enum LogLevel {
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum Action {
+pub enum FilterStatus {
     Continue = 0,
-    Pause = 1,
+    StopIteration = 1,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum FilterHeadersStatus {
+    Continue = 0,
+    StopIteration = 1,
+    ContinueAndEndStream = 2,
+    StopAllIterationAndBuffer = 3,
+    StopAllIterationAndWatermark = 4,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum FilterMetadataStatus {
+    Continue = 0,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum FilterTrailersStatus {
+    Continue = 0,
+    StopIteration = 1,
+}
+
+#[repr(u32)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+pub enum FilterDataStatus {
+    Continue = 0,
+    StopIterationAndBuffer = 1,
+    StopIterationAndWatermark = 2,
+    StopIterationNoBuffer = 3,
 }
 
 // This is returned by the ABI and subject to additions, so make it

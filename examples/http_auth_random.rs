@@ -36,7 +36,7 @@ impl RootContext for HttpAuthRandomRoot {
 struct HttpAuthRandom;
 
 impl HttpContext for HttpAuthRandom {
-    fn on_http_request_headers(&mut self, _: usize, _: bool) -> Action {
+    fn on_http_request_headers(&mut self, _: usize, _: bool) -> FilterHeadersStatus {
         self.dispatch_http_call(
             "httpbin",
             vec![
@@ -49,12 +49,12 @@ impl HttpContext for HttpAuthRandom {
             Duration::from_secs(5),
         )
         .unwrap();
-        Action::Pause
+        FilterHeadersStatus::StopIteration
     }
 
-    fn on_http_response_headers(&mut self, _: usize, _: bool) -> Action {
+    fn on_http_response_headers(&mut self, _: usize, _: bool) -> FilterHeadersStatus {
         self.set_http_response_header("Powered-By", Some("proxy-wasm"));
-        Action::Continue
+        FilterHeadersStatus::Continue
     }
 }
 
