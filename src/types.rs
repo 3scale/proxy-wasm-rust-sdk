@@ -45,9 +45,16 @@ pub enum Status {
     Ok = 0,
     NotFound = 1,
     BadArgument = 2,
+    SerializationFailure = 3,
+    ParseFailure = 4,
+    BadExpression = 5,
+    InvalidMemoryAccess = 6,
     Empty = 7,
     CasMismatch = 8,
+    ResultMismatch = 9,
     InternalFailure = 10,
+    BrokenConnection = 11,
+    Unimplemented = 12,
 }
 
 #[repr(u32)]
@@ -67,8 +74,10 @@ pub enum BufferType {
     DownstreamData = 2,
     UpstreamData = 3,
     HttpCallResponseBody = 4,
+    GrpcReceiveBuffer = 5,
     VmConfiguration = 6,
     PluginConfiguration = 7,
+    CallData = 8,
 }
 
 #[repr(u32)]
@@ -78,6 +87,8 @@ pub enum MapType {
     HttpRequestTrailers = 1,
     HttpResponseHeaders = 2,
     HttpResponseTrailers = 3,
+    GrpcReceiveInitialMetadata = 4,
+    GrpcReceiveTrailingMetadata = 5,
     HttpCallResponseHeaders = 6,
     HttpCallResponseTrailers = 7,
 }
