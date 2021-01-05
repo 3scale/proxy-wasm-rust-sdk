@@ -94,15 +94,6 @@ pub enum Status {
 
 #[repr(u32)]
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum StreamType {
-    HttpRequest = 0,
-    HttpResponse = 1,
-    Downstream = 2,
-    Upstream = 3,
-}
-
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum BufferType {
     HttpRequestBody = 0,
     HttpResponseBody = 1,

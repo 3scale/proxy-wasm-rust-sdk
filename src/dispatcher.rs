@@ -253,11 +253,10 @@ impl Dispatcher {
         &self,
         context_id: u32,
         num_headers: usize,
-        end_of_stream: bool,
     ) -> FilterHeadersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
-            http_stream.on_http_request_headers(num_headers, end_of_stream)
+            http_stream.on_http_request_headers(num_headers)
         } else {
             panic!("invalid context_id")
         }
@@ -290,11 +289,10 @@ impl Dispatcher {
         &self,
         context_id: u32,
         num_headers: usize,
-        end_of_stream: bool,
     ) -> FilterHeadersStatus {
         if let Some(http_stream) = self.http_streams.borrow_mut().get_mut(&context_id) {
             self.active_id.set(context_id);
-            http_stream.on_http_response_headers(num_headers, end_of_stream)
+            http_stream.on_http_response_headers(num_headers)
         } else {
             panic!("invalid context_id")
         }
@@ -430,10 +428,9 @@ pub extern "C" fn proxy_on_upstream_connection_close(context_id: u32, peer_type:
 pub extern "C" fn proxy_on_request_headers(
     context_id: u32,
     num_headers: usize,
-    end_of_stream: bool,
 ) -> FilterHeadersStatus {
     DISPATCHER.with(|dispatcher| {
-        dispatcher.on_http_request_headers(context_id, num_headers, end_of_stream)
+        dispatcher.on_http_request_headers(context_id, num_headers)
     })
 }
 
@@ -456,10 +453,9 @@ pub extern "C" fn proxy_on_request_trailers(context_id: u32, num_trailers: usize
 pub extern "C" fn proxy_on_response_headers(
     context_id: u32,
     num_headers: usize,
-    end_of_stream: bool,
 ) -> FilterHeadersStatus {
     DISPATCHER.with(|dispatcher| {
-        dispatcher.on_http_response_headers(context_id, num_headers, end_of_stream)
+        dispatcher.on_http_response_headers(context_id, num_headers)
     })
 }
 

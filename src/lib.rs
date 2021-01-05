@@ -29,4 +29,4 @@ pub fn set_root_context(callback: types::NewRootContext) {
 }
 
 #[no_mangle]
-pub extern "C" fn proxy_abi_version_0_2_1() {}
+pub extern "C" fn proxy_abi_version_0_1_0() {}
