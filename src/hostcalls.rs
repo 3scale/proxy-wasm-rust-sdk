@@ -751,6 +751,55 @@ pub fn increment_metric(metric_id: u32, offset: i64) -> Result<(), Status> {
     }
 }
 
+extern "C" {
+    fn proxy_call_foreign_function(
+        function_name_data: *const u8,
+        function_name_size: usize,
+        parameters_data: *const u8,
+        parameters_size: usize,
+        return_results_data: *mut *mut u8,
+        return_results_size: *mut usize,
+    ) -> Status;
+}
+
+pub fn call_foreign_function(
+    function_name: &str,
+    parameters: Option<&[u8]>,
+) -> Result<Option<Bytes>, Status> {
+    let mut return_results_data: *mut u8 = null_mut();
+    let mut return_results_size: usize = 0;
+    let (parameters_ptr, parameters_len) = if let Some(parameters_data) = parameters {
+        (parameters_data.as_ptr(), parameters_data.len())
+    } else {
+        (null(), 0)
+    };
+    let status = unsafe {
+        proxy_call_foreign_function(
+            function_name.as_ptr(),
+            function_name.len(),
+            parameters_ptr,
+            parameters_len,
+            &mut return_results_data,
+            &mut return_results_size,
+        )
+    };
+    match status {
+        Status::Ok => Ok(if return_results_data.is_null() {
+            None
+        } else {
+            Some(unsafe {
+                Vec::from_raw_parts(
+                    return_results_data,
+                    return_results_size,
+                    return_results_size,
+                )
+            })
+        }),
+        Status::NotFound => Ok(None),
+        status => panic!("unexpected status: {}", status as u32),
+    }
+}
+
 mod utils {
     use crate::types::Bytes;
     use std::convert::TryFrom;
